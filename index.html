@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Salary Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Android / Chrome --> 
+  <link rel="icon" type="image/png" href="icon-192.png">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-image: url('https://media.licdn.com/dms/image/D4D12AQFrJR5LM1m0dQ/article-cover_image-shrink_720_1280/0/1681371524062?e=2147483647&v=beta&t=UNWiKVD3cqqbT6Y2vH5lvFI6jjUFKQxr0s6kO9Lr8h4');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: rgba(55, 55, 55, 0.4);
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      backdrop-filter: blur(0px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    h2 {
+      color: #25ECFB;
+      text-align: center;
+      margin-bottom: 0px;
+      margin-top: 2px;
+      font-size: 26px;
+    }
+    h3 {
+      color: #A6F972;
+      text-align: center;
+      margin-top: 2px;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+    h5 {
+      font-weight: bold;
+      color: #2fff;
+      font-size: 12px;
+      text-align: center;
+      margin-top: 2px;
+      margin-bottom: 20px;
+    }
+    .input-row {
+      display: flex;
+      margin-bottom: 2px;
+      align-items: center;
+    }
+    .input-group {
+      display: flex;
+      flex: 1;
+      align-items: center;
+    }
+    label {
+      width: 140px;
+      font-weight: bold;
+      color: #FBDE25;
+      font-size: 14px;
+    }
+    input[type="text"], input[type="number"], input[type="time"], input[type="date"], select {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 10px;
+      font-size: 10px;
+    }
+    #dailyRate {
+      flex: 1;
+      text-align: right;
+      font-weight: bold;
+      color: #380fff;
+      font-size: 16px;
+    }
+    .small-input {
+      width: 80px;
+      text-align: center;
+    }
+    .calculation {
+      width: 160px;
+      padding: 8px 10px;
+      background-color: rgba(248, 249, 250, 0.8);
+      border-radius: 5px;
+      text-align: right;
+      font-weight: bold;
+      color: #27ae60;
+      font-size: 14px;
+    }
+    .net-pay-calculation {
+      width: 160px;
+      padding: 8px 10px;
+      background-color: rgba(248, 249, 250, 0.8);
+      border-radius: 5px;
+      text-align: right;
+      font-weight: bold;
+      color: #3498db;
+      font-size: 20px;
+    }
+  
+    .total-row {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 2px solid rgba(255,255,255,0.70);
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .button-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    #saveBtn {
+      background-color: #3498db;
+      color: white;
+    }
+    #saveBtn:hover {
+      background-color: #2980b9;
+    }
+    #loadBtn {
+      background-color: #2ecc71;
+      color: white;
+    }
+    #loadBtn:hover {
+      background-color: #27ae60;
+    }
+    #toggleHolidayBtn, #addRowBtn, #calculateHoursBtn {
+      background-color: #9b59b6;
+      color: white;
+    }
+    #toggleHolidayBtn:hover, #addRowBtn:hover, #calculateHoursBtn:hover {
+      background-color: #8e44ad;
+    }
+    .holiday-section {
+      display: block;
+    }
+    .holiday-section.hidden {
+      display: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: fixed;
+    }
+    th, td {
+      padding: 6px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    th {
+      background-color: rgba(0,0,0,0.2);
+      color: #FBDE25;
+      font-size: 10px;
+    }
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 9px 2px;
+      cursor: pointer;
+      font-size: 10px;
+      flex: 1;
+      min-width: 40px;
+      text-align: center;
+    }
+    .day-input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .time-in, .time-out {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .code {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+  
+    @media (max-width: 650px) {
+      .container {
+        padding: 15px;
+      }
+      .input-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .input-group {
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      label {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      input[type="text"], input[type="number"] {
+        width: 100%;
+      }
+      .calculation {
+        width: 100%;
+        text-align: left;
+      }
+      table {
+        font-size: 14px;
+      }
+      th, td {
+        padding: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Salary Calculator</h2>
+    <h5>by NherG</h5>
+
+    <h3>Time Entries</h3>
+    <table id="timeEntries">
+      <thead>
+        <tr>
+          <th style="width: 25%">Day</th>
+          <th style="width: 20%">Time In</th>
+          <th style="width: 20%">Time Out</th>
+          <th style="width: 20%">Code</th>
+          <th style="width: 15%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="date" class="day-input"></td>
+          <td><input type="time" class="time-in"></td>
+          <td><input type="time" class="time-out"></td>
+          <td>
+            <select class="code">
+              <option value="Reg">Reg</option>
+              <option value="6D">6D</option>
+              <option value="LH">LH</option>
+              <option value="SH">SH</option>
+              <option value="VL">Leave</option>
+            </select>
+          </td>
+          <td><button class="delete-btn">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="button-group">
+      <button id="addRowBtn">Add Row</button>
+      <button id="calculateHoursBtn">Calculate Hours</button>
+    </div>
+    
+    <div class="total-row">
+
+    <div class="input-row">
+      <label for="dailyRate">Daily Rate:</label>
+      <div class="input-group">
+        <input type="text" id="dailyRate" placeholder="Input Daily Rate">
+      </div>
+    </div>
+
+      <div class="total-row"></div>
+      
+    <div class="input-row">
+      <label for="regHours">Regular Hours:</label>
+      <div class="input-group">
+        <input type="number" id="regHours" class="small-input" placeholder="Hours">
+        <div class="calculation" id="regPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="otHours">Reg OT:</label>
+      <div class="input-group">
+        <input type="number" id="otHours" class="small-input" placeholder="Hours">
+        <div class="calculation" id="otPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="nightPrem">Night Premium:</label>
+      <div class="input-group">
+        <input type="number" id="nightPrem" class="small-input" placeholder="Hours">
+        <div class="calculation" id="nightPremPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="npot">NP OT:</label>
+      <div class="input-group">
+        <input type="number" id="npot" class="small-input" placeholder="Hours">
+        <div class="calculation" id="npotPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="sixDPrem">6th Day Premium:</label>
+      <div class="input-group">
+        <input type="number" id="sixDPrem" class="small-input" placeholder="Hours">
+        <div class="calculation" id="sixDPremPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="sixDnp">6D NP:</label>
+      <div class="input-group">
+        <input type="number" id="sixDnp" class="small-input" placeholder="Hours">
+        <div class="calculation" id="sixDnpPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="sixDot">6D OT:</label>
+      <div class="input-group">
+        <input type="number" id="sixDot" class="small-input" placeholder="Hours">
+        <div class="calculation" id="sixDotPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="input-row">
+      <label for="sixDnpot">6D NP OT:</label>
+      <div class="input-group">
+        <input type="number" id="sixDnpot" class="small-input" placeholder="Hours">
+        <div class="calculation" id="sixDnpotPay">₱0.00</div>
+      </div>
+    </div>
+      
+      <div class="input-row">
+      <label for="VLhours">Leave:</label>
+      <div class="input-group">
+        <input type="number" id="VLhours" class="small-input" placeholder="Hours">
+        <div class="calculation" id="VLpay">₱0.00</div>
+      </div>
+    </div>
+     
+      <div class="input-row">
+      <label for="mealAllowanceDays">Meal Allowance:</label>
+      <div class="input-group">
+        <input type="number" id="mealAllowanceDays" class="small-input" placeholder="Count">
+        <div class="calculation" id="mealAllowanceAmt">₱0.00</div>
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button id="toggleHolidayBtn">Show Holiday Section</button>
+    </div>
+
+    <div id="holidaySection" class="holiday-section hidden">
+      <div class="total-row">
+        <h5>- - - H O L I D A Y - - -</h5>
+          <div style="flex: 1;"></div>
+      </div>
+      
+      <div class="input-row">
+        <label for="legalHol">Legal Holiday:</label>
+        <div class="input-group">
+          <input type="number" id="legalHol" class="small-input" placeholder="Hours">
+          <div class="calculation" id="legalHolPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="lhNp">LH NP:</label>
+        <div class="input-group">
+          <input type="number" id="lhNp" class="small-input" placeholder="Hours">
+          <div class="calculation" id="lhNpPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="lhOt">LH OT:</label>
+        <div class="input-group">
+          <input type="number" id="lhOt" class="small-input" placeholder="Hours">
+          <div class="calculation" id="lhOtPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="lhOt">LH NPOT:</label>
+        <div class="input-group">
+          <input type="number" id="lhnpOt" class="small-input" placeholder="Hours">
+          <div class="calculation" id="lhnpOtPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="spHol">Special Holiday:</label>
+        <div class="input-group">
+          <input type="number" id="spHol" class="small-input" placeholder="Hours">
+          <div class="calculation" id="spHolPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="shNp">SH NP:</label>
+        <div class="input-group">
+          <input type="number" id="shNp" class="small-input" placeholder="Hours">
+          <div class="calculation" id="shNpPay">₱0.00</div>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="shOt">SH OT:</label>
+        <div class="input-group">
+          <input type="number" id="shOt" class="small-input" placeholder="Hours">
+          <div class="calculation" id="shOtPay">₱0.00</div>
+        </div>
+      </div>
+      
+      <div class="input-row">
+        <label for="shOt">SH NPOT:</label>
+        <div class="input-group">
+          <input type="number" id="shnpOt" class="small-input" placeholder="Hours">
+          <div class="calculation" id="shnpOtPay">₱0.00</div>
+        </div>
+      </div>
+    </div>
+      
+      
+
+    <div class="input-row total-row">
+      <label>Gross Salary:</label>
+      <div class="input-group">
+        <div style="flex: 1;"></div>
+        <div class="net-pay-calculation" id="totalPay">₱0.00</div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button id="saveBtn">Save Data</button>
+      <button id="loadBtn">Load Data</button>
+    </div>
+  </div>
+
+  <script>
+    // Format Daily Rate with thousand separators
+    document.getElementById('dailyRate').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/[^0-9.]/g, '');
+      let parts = value.split('.');
+      
+      // Format integer part with commas
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      
+      // Ensure only 2 decimal places
+      if (parts.length > 1) {
+        parts[1] = parts[1].slice(0, 2);
+      }
+      
+      e.target.value = parts.join('.');
+      calculateSalary();
+    });
+
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input => input.addEventListener('input', calculateSalary));
+
+    function getNumericValue(id) {
+      const element = document.getElementById(id);
+      let value = element.value.replace(/,/g, '');
+      return parseFloat(value) || 0;
+    }
+
+    function calculateSalary() {
+      const rate = getNumericValue('dailyRate');
+      const hr = rate / 8;
+
+      const getVal = id => parseFloat(document.getElementById(id).value) || 0;
+
+      const values = {
+        regHours: getVal('regHours'),
+        otHours: getVal('otHours'),
+        legalHol: getVal('legalHol'),
+        spHol: getVal('spHol'),
+        lhOt: getVal('lhOt'),
+        shOt: getVal('shOt'),
+        sixDPrem: getVal('sixDPrem'),
+        sixDot: getVal('sixDot'),
+        sixDnp: getVal('sixDnp'),
+        sixDnpot: getVal('sixDnpot'),
+        nightPrem: getVal('nightPrem'),
+        npot: getVal('npot'),
+        lhNp: getVal('lhNp'),
+        shNp: getVal('shNp'),
+        shnpOt: getVal('shnpOt'),
+        lhnpOt: getVal('lhnpOt'),
+        mealAllowanceDays: getVal('mealAllowanceDays'),
+        VLhours: getVal('VLhours')
+      };
+
+      const multipliers = {
+        otHours: 1.5,
+        legalHol: 2.5,
+        spHol: 2.3,
+        lhOt: 3.25,
+        shOt: 3.0,
+        sixDPrem: 0.65,
+        sixDot: 2.14,
+        sixDnp: 0.495,
+        sixDnpot: 0.642,
+        nightPrem: 0.3,
+        npot: 0.45,
+        lhNp: 0.75,
+        shNp: 0.69,
+        shnpOt: 0.9,
+        lhnpOt: 0.975,
+        mealAllowanceDays: 115,
+        VLhours: 1
+      };
+
+      const results = {
+        regPay: hr * values.regHours,
+        VLpay: hr * values.VLhours,
+        otPay: hr * values.otHours * multipliers.otHours,
+        legalHolPay: hr * values.legalHol * multipliers.legalHol,
+        spHolPay: hr * values.spHol * multipliers.spHol,
+        lhOtPay: hr * values.lhOt * multipliers.lhOt,
+        shOtPay: hr * values.shOt * multipliers.shOt,
+        sixDPremPay: hr * values.sixDPrem * multipliers.sixDPrem,
+        sixDotPay: hr * values.sixDot * multipliers.sixDot,
+        sixDnpPay: hr * values.sixDnp * multipliers.sixDnp,
+        sixDnpotPay: hr * values.sixDnpot * multipliers.sixDnpot,
+        nightPremPay: hr * values.nightPrem * multipliers.nightPrem,
+        npotPay: hr * values.npot * multipliers.npot,
+        lhNpPay: hr * values.lhNp * multipliers.lhNp,
+        shNpPay: hr * values.shNp * multipliers.shNp,
+        shnpOtPay: hr * values.shnpOt * multipliers.shnpOt,
+        lhnpOtPay: hr * values.lhnpOt * multipliers.lhnpOt,
+        mealAllowanceAmt: values.mealAllowanceDays * multipliers.mealAllowanceDays
+      };
+
+      let total = 0;
+      for (const key in results) {
+        total += results[key];
+        const cell = document.getElementById(key);
+        if (cell) cell.textContent = `₱${results[key].toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      document.getElementById('totalPay').textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // Add new row
+    document.getElementById('addRowBtn').addEventListener('click', function() {
+      const tbody = document.querySelector('#timeEntries tbody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td><input type="date" class="day-input"></td>
+        <td><input type="time" class="time-in"></td>
+        <td><input type="time" class="time-out"></td>
+        <td>
+          <select class="code">
+            <option value="Reg">Reg</option>
+            <option value="6D">6D</option>
+            <option value="LH">LH</option>
+            <option value="SH">SH</option>
+            <option value="VL">Leave</option>
+          </select>
+        </td>
+        <td><button class="delete-btn">Delete</button></td>
+      `;
+      tbody.appendChild(newRow);
+    });
+
+    // Delete row
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('delete-btn')) {
+        const row = e.target.closest('tr');
+        if (document.querySelectorAll('#timeEntries tbody tr').length > 1) {
+          row.remove();
+        } else {
+          alert("You need at least one row.");
+        }
+      }
+    });
+
+    
+// Calculate hours from time entries
+document.getElementById('calculateHoursBtn').addEventListener('click', function() {
+  const rows = document.querySelectorAll('#timeEntries tbody tr');
+  const results = {
+    regHours: 0,
+    otHours: 0,
+    nightPrem: 0,
+    npot: 0,
+    sixDPrem: 0,
+    sixDnp: 0,
+    sixDot: 0,
+    sixDnpot: 0,
+    legalHol: 0,
+    lhNp: 0,
+    lhOt: 0,
+    lhnpOt: 0,
+    spHol: 0,
+    shNp: 0,
+    shOt: 0,
+    shnpOt: 0,
+    mealAllowanceDays: 0,
+    VLhours: 0
+  };
+
+  let mealAllowanceDays = 0;
+
+  rows.forEach(row => {
+    const timeIn = row.querySelector('.time-in').value;
+    const timeOut = row.querySelector('.time-out').value;
+    const code = row.querySelector('.code').value;
+
+    if (!timeIn || !timeOut) {
+      alert('Please fill in both Time In and Time Out for all rows');
+      return;
+    }
+
+    // Parse times
+    const start = new Date(`2000-01-01T${timeIn}`);
+    const end = new Date(`2000-01-01T${timeOut}`);
+    
+    // Handle overnight
+    if (end < start) {
+      end.setDate(end.getDate() + 1);
+    }
+    
+    const totalHours = (end - start) / (1000 * 60 * 60);
+    if (totalHours < 0) {
+      console.error("Negative total hours calculated");
+      return;
+    }
+
+    // Night premium window: 6PM–6AM
+    const nightStart = new Date("2000-01-01T18:00");
+    const nightEnd   = new Date("2000-01-02T06:00");
+
+    // Helper: overlap hours between [aStart, aEnd] and [bStart, bEnd]
+    function overlapHours(aStart, aEnd, bStart, bEnd) {
+      const startMax = Math.max(aStart.getTime(), bStart.getTime());
+      const endMin = Math.min(aEnd.getTime(), bEnd.getTime());
+      return Math.max(0, (endMin - startMax) / (1000 * 60 * 60));
+    }
+
+    // Split into regular (first 8) and overtime (rest)
+    const regEnd = new Date(start.getTime());
+    regEnd.setHours(regEnd.getHours() + 8);
+
+    const regularEnd    = end < regEnd ? end : regEnd;
+    const overtimeStart = regEnd;
+    const overtimeEnd   = end > regEnd ? end : regEnd;
+
+    // Regular & OT hours
+    const regWorkHours = Math.min(8, totalHours);
+    const otWorkHours  = Math.max(0, totalHours - 8);
+
+    // NP inside first 8 hrs
+    const npHours = overlapHours(start, regularEnd, nightStart, nightEnd);
+    // NPOT inside OT hrs
+    const npOtHours = overlapHours(overtimeStart, overtimeEnd, nightStart, nightEnd);
+
+    // Add to appropriate category based on code
+    if (code === 'Reg') {
+      results.regHours += regWorkHours;
+      results.otHours  += otWorkHours;
+      results.nightPrem += npHours;
+      results.npot     += npOtHours;
+    } 
+    else if (code === '6D') {
+      results.regHours += regWorkHours;
+      results.sixDPrem += regWorkHours;
+      results.sixDot   += otWorkHours;
+      results.sixDnp   += npHours;
+      results.sixDnpot += npOtHours;
+    } 
+    else if (code === 'LH') {
+      results.legalHol += regWorkHours;
+      results.lhOt     += otWorkHours;
+      results.lhNp     += npHours;
+      results.lhnpOt   += npOtHours;
+    } 
+    else if (code === 'SH') {
+      results.spHol   += regWorkHours;
+      results.shOt    += otWorkHours;
+      results.shNp    += npHours;
+      results.shnpOt  += npOtHours;
+    }
+    else if (code === 'VL') {
+      results.VLhours   += regWorkHours;
+    }
+
+    // 🔹 Meal Allowance condition (OT ≥ 4 hrs)
+    if (otWorkHours >= 4) {
+      mealAllowanceDays++;
+    }
+  });
+
+  // Fill in calculated hours
+  document.getElementById('regHours').value  = results.regHours.toFixed(2);
+  document.getElementById('otHours').value   = results.otHours.toFixed(2);
+  document.getElementById('nightPrem').value = results.nightPrem.toFixed(2);
+  document.getElementById('npot').value      = results.npot.toFixed(2);
+  document.getElementById('sixDPrem').value  = results.sixDPrem.toFixed(2);
+  document.getElementById('sixDnp').value    = results.sixDnp.toFixed(2);
+  document.getElementById('sixDot').value    = results.sixDot.toFixed(2);
+  document.getElementById('sixDnpot').value  = results.sixDnpot.toFixed(2);
+  document.getElementById('legalHol').value  = results.legalHol.toFixed(2);
+  document.getElementById('lhNp').value      = results.lhNp.toFixed(2);
+  document.getElementById('lhOt').value      = results.lhOt.toFixed(2);
+  document.getElementById('lhnpOt').value    = results.lhnpOt.toFixed(2);
+  document.getElementById('spHol').value     = results.spHol.toFixed(2);
+  document.getElementById('shNp').value      = results.shNp.toFixed(2);
+  document.getElementById('shOt').value      = results.shOt.toFixed(2);
+  document.getElementById('shnpOt').value    = results.shnpOt.toFixed(2);
+  document.getElementById('VLhours').value    = results.VLhours.toFixed(2);
+
+  // 🔹 Meal Allowance output
+  const mealAllowanceAmt = mealAllowanceDays * 115;
+  document.getElementById('mealAllowanceDays').value = mealAllowanceDays;
+  document.getElementById('mealAllowanceAmt').value  = mealAllowanceAmt.toFixed(2);
+
+  // Recalculate salary
+  calculateSalary();
+});
+    
+    
+    // Save data to text file with custom filename
+    document.getElementById('saveBtn').addEventListener('click', function() {
+      const defaultFilename = 'salary_data_' + new Date().toISOString().slice(0, 10) + '.txt';
+      const filename = prompt('Enter filename for saving:', defaultFilename);
+      
+      if (filename) {
+        const data = {};
+        // Include daily rate
+        data['dailyRate'] = document.getElementById('dailyRate').value;
+        // Include all other inputs
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+          data[input.id] = input.value || '0';
+        });
+        
+        // Include time entries
+        const timeEntries = [];
+        document.querySelectorAll('#timeEntries tbody tr').forEach(row => {
+          timeEntries.push({
+            day: row.querySelector('.day-input').value,
+            timeIn: row.querySelector('.time-in').value,
+            timeOut: row.querySelector('.time-out').value,
+            code: row.querySelector('.code').value
+          });
+        });
+        data['timeEntries'] = timeEntries;
+        
+        const blob = new Blob([JSON.stringify(data)], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename.endsWith('.txt') ? filename : filename + '.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    });
+
+    // Load data from text file
+    document.getElementById('loadBtn').addEventListener('click', function() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.txt';
+      
+      input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          try {
+            const data = JSON.parse(event.target.result);
+            // Set daily rate
+            document.getElementById('dailyRate').value = data.dailyRate || '0';
+            // Set all other inputs
+            for (const id in data) {
+              if (id !== 'dailyRate' && id !== 'timeEntries') {
+                const input = document.getElementById(id);
+                if (input) {
+                  input.value = data[id];
+                }
+              }
+            }
+            
+            // Load time entries if they exist
+            if (data.timeEntries && data.timeEntries.length > 0) {
+              const tbody = document.querySelector('#timeEntries tbody');
+              tbody.innerHTML = ''; // Clear existing rows
+              
+              data.timeEntries.forEach(entry => {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                  <td><input type="date" class="day-input" value="${entry.day || ''}"></td>
+                  <td><input type="time" class="time-in" value="${entry.timeIn || ''}"></td>
+                  <td><input type="time" class="time-out" value="${entry.timeOut || ''}"></td>
+                  <td>
+                    <select class="code">
+                      <option value="Reg" ${entry.code === 'Reg' ? 'selected' : ''}>Regular (Reg)</option>
+                      <option value="6D" ${entry.code === '6D' ? 'selected' : ''}>6th Day (6D)</option>
+                      <option value="LH" ${entry.code === 'LH' ? 'selected' : ''}>Legal Holiday (LH)</option>
+                      <option value="SH" ${entry.code === 'SH' ? 'selected' : ''}>Special Holiday (SH)</option>
+                      <option value="VL" ${entry.code === 'VL' ? 'selected' : ''}>Leave (VL)</option>
+                    
+                    </select>
+                  </td>
+                  <td><button class="delete-btn">Delete</button></td>
+                `;
+                tbody.appendChild(newRow);
+              });
+            }
+            
+            calculateSalary(); // Recalculate after loading
+          } catch (error) {
+            alert('Error loading file: ' + error.message);
+          }
+        };
+        
+        reader.readAsText(file);
+      };
+      
+      input.click();
+    });
+
+    // Toggle holiday section visibility
+    document.getElementById('toggleHolidayBtn').addEventListener('click', function() {
+      const holidaySection = document.getElementById('holidaySection');
+      holidaySection.classList.toggle('hidden');
+      this.textContent = holidaySection.classList.contains('hidden') ? 'Show Holiday Section' : 'Hide Holiday Section';
+    });
+
+    // Initial calculation
+    calculateSalary();
+  </script>
+</body>
+</html>
