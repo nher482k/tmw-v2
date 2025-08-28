@@ -1,0 +1,21 @@
+{
+  "name": "TMW",
+  "short_name": "TMW",
+  "start_url": "/tmw/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3367D6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://nher482k.github.io/tmw/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://nher482k.github.io/tmw/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
