@@ -3,13 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Salary Calculator</title>
+  <title>Sweldo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Android / Chrome --> 
-  <!-- <link rel="icon" type="image/png" sizes="192x192" href="https://nher482k.github.io/tmw/icon-192.png"> -->
-
-  <link rel="manifest" href="/tmw/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
   <style>
     body {
@@ -63,18 +61,30 @@
       flex: 1;
       align-items: center;
     }
+	   .input-group1 {
+      display: inline-flex;
+      flex: 0;
+      align-items: center;
+    }
     label {
       width: 140px;
       font-weight: bold;
       color: #FBDE25;
       font-size: 14px;
     }
-    input[type="text"], input[type="number"], input[type="time"], input[type="date"], select {
+    input[type="time"], input[type="date"], input[type="text1"], select {
+      padding: 8px 4px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-right: 5px;
+      font-size: 10px;
+    }
+   	input[type="text"], input[type="number"], select {
       padding: 8px 10px;
       border: 1px solid #ddd;
       border-radius: 5px;
       margin-right: 10px;
-      font-size: 10px;
+      font-size: 12px;
     }
     #dailyRate {
       flex: 1;
@@ -104,13 +114,33 @@
       border-radius: 5px;
       text-align: right;
       font-weight: bold;
+      color: #003D06;
+      font-size: 20px;
+    }
+	.gross-pay-calculation {
+      width: 160px;
+      padding: 8px 10px;
+      background-color: rgba(248, 249, 250, 0.8);
+      border-radius: 5px;
+      text-align: right;
+      font-weight: bold;
       color: #3498db;
+      font-size: 20px;
+    }
+	.deduction-calculation {
+      width: 160px;
+      padding: 8px 10px;
+      background-color: rgba(248, 249, 250, 0.8);
+      border-radius: 5px;
+      text-align: right;
+      font-weight: bold;
+      color: #ff3333;
       font-size: 20px;
     }
   
     .total-row {
       margin-top: 25px;
-      padding-top: 15px;
+      padding-top: 5px;
       border-top: 2px solid rgba(255,255,255,0.70);
       font-size: 18px;
       font-weight: bold;
@@ -130,6 +160,34 @@
       font-size: 15px;
       transition: all 0.2s;
     }
+	.action-bar {
+	  position: fixed;
+	  bottom: 20px;              /* Stick to bottom */
+	  right: 20px;               /* Stick to right */
+	  display: flex;
+	  gap: 10px;
+	  background-color: #f9f9f9;
+	  padding: 10px 15px;
+	  border-radius: 8px;
+	  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+	  z-index: 1000;             /* Stay above other elements */
+	}
+
+	.action-bar button {
+	  padding: 8px 16px;
+	  font-size: 14px;
+	  border: none;
+	  border-radius: 5px;
+	  cursor: pointer;
+	  background-color: #0078D4;
+	  color: white;
+	  transition: background-color 0.3s ease;
+	}
+
+	.action-bar button:hover {
+	  background-color: #005a9e;
+	}
+
     #saveBtn {
       background-color: #3498db;
       color: white;
@@ -144,13 +202,19 @@
     #loadBtn:hover {
       background-color: #27ae60;
     }
-    #toggleHolidayBtn, #addRowBtn, #calculateHoursBtn {
+    #toggleHolidayBtn, #toggleDeductionBtn, #addRowBtn, #calculateHoursBtn {
       background-color: #9b59b6;
       color: white;
     }
-    #toggleHolidayBtn:hover, #addRowBtn:hover, #calculateHoursBtn:hover {
+    #toggleHolidayBtn:hover, #toggleDeductionBtn:hover, #addRowBtn:hover, #calculateHoursBtn:hover {
       background-color: #8e44ad;
     }
+	#toggleDeductionBtn {
+      background-color: #FF595E;
+	}
+	#toggleDeductionBtn:hover {
+      background-color: #F74147;
+	}
     .holiday-section {
       display: block;
     }
@@ -233,7 +297,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>Salary Calculator</h2>
+    <h2>Salary Calculator v2</h2>
     <h5>by NherG</h5>
 
     <h3>Time Entries</h3>
@@ -280,7 +344,16 @@
       </div>
     </div>
 
-      <div class="total-row"></div>
+     
+    <div class="total-row"></div>
+      
+      
+      <!-- Salary Summary Section (hidden at first) -->
+    <div id="resultsSection" class="holiday-section hidden">
+
+      <h5>- - - R e s u l t s - - -</h5>
+          <div style="flex: 1;"></div>
+    
       
     <div class="input-row">
       <label for="regHours">Regular Hours:</label>
@@ -361,11 +434,16 @@
         <div class="calculation" id="mealAllowanceAmt">₱0.00</div>
       </div>
     </div>
-    
+  </div>
+      
     <div class="button-group">
       <button id="toggleHolidayBtn">Show Holiday Section</button>
-    </div>
+	     </div>
+    <div class="button-group">
+      <button id="toggleDeductionBtn">Show Deductions Section</button>
+      </div>
 
+	
     <div id="holidaySection" class="holiday-section hidden">
       <div class="total-row">
         <h5>- - - H O L I D A Y - - -</h5>
@@ -437,23 +515,141 @@
       </div>
     </div>
       
-      
+    
 
-    <div class="input-row total-row">
-      <label>Gross Salary:</label>
-      <div class="input-group">
-        <div style="flex: 1;"></div>
-        <div class="net-pay-calculation" id="totalPay">₱0.00</div>
-      </div>
+<!-- ✅ Hidden Deduction Section -->
+<div id="deductionSection" class="holiday-section hidden">
+  <div class="total-row">
+    <h5>- - - D E D U C T I O N S - - -</h5>
+    <div style="flex: 1;"></div>
+  </div>
+
+  <div class="input-row">
+    <label for="sss">SSS:</label>
+    <div class="input-group">
+      <input type="number" id="sss" class="small-input" placeholder="Amount">
+      <div class="calculation" id="sssDeduction">₱0.00</div>
     </div>
+  </div>
 
+  <div class="input-row">
+    <label for="pagibig">Pag-IBIG:</label>
+    <div class="input-group">
+      <input type="number" id="pagibig" class="small-input" placeholder="Amount">
+      <div class="calculation" id="pagibigDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="philhealth">PhilHealth:</label>
+    <div class="input-group">
+      <input type="number" id="philhealth" class="small-input" placeholder="Amount">
+      <div class="calculation" id="philhealthDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="uniondues">Union Dues:</label>
+    <div class="input-group">
+      <input type="number" id="uniondues" class="small-input" placeholder="Amount">
+      <div class="calculation" id="unionduesDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="educloan">EducLoan:</label>
+    <div class="input-group">
+      <input type="number" id="educloan" class="small-input" placeholder="Amount">
+      <div class="calculation" id="educloanDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="homesuiteloan">Home Suite Loan:</label>
+    <div class="input-group">
+      <input type="number" id="homesuiteloan" class="small-input" placeholder="Amount">
+      <div class="calculation" id="homesuiteloanDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="emergencyloan">Emergency Loan:</label>
+    <div class="input-group">
+      <input type="number" id="emergencyloan" class="small-input" placeholder="Amount">
+      <div class="calculation" id="emergencyloanDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="coop">COOP:</label>
+    <div class="input-group">
+      <input type="number" id="coop" class="small-input" placeholder="Amount">
+      <div class="calculation" id="coopDeduction">₱0.00</div>
+    </div>
+  </div>
+</div>
+
+<div class="input-row total-row">
+  <label>Gross Salary:</label>
+  <div class="input-group">
+    <div style="flex: 1;"></div>
+    <div class="gross-pay-calculation" id="grossPay">₱0.00</div>
+  </div>
+
+  <label>Total Deductions:</label>
+  <div class="input-group">
+    <div style="flex: 1;"></div>
+    <div class="deduction-calculation" id="totalDeductions">₱0.00</div>
+  </div>
+
+  <label>Net Salary:</label>
+  <div class="input-group">
+    <div style="flex: 1;"></div>
+    <div class="net-pay-calculation" id="netPay">₱0.00</div>
+  </div>
+</div>
+
+<div class="input-row total-row"></div>
     <div class="button-group">
       <button id="saveBtn">Save Data</button>
       <button id="loadBtn">Load Data</button>
+	  <button id="refreshBtn">Reset</button>
+
     </div>
   </div>
 
   <script>
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+    location.reload();
+  });
+
+  
+  const holidayBtn = document.getElementById("toggleHolidayBtn");
+  const timeEntries = document.getElementById("timeEntries");
+
+  function checkHolidayCode() {
+    let hasHoliday = false;
+    // Loop through all <select> with class="code"
+    document.querySelectorAll("#timeEntries .code").forEach(select => {
+      if (select.value === "LH" || select.value === "SH") {
+        hasHoliday = true;
+      }
+    });
+    // Show/hide button
+    holidayBtn.style.display = hasHoliday ? "inline-block" : "none";
+  }
+
+  // Run when a code changes
+  timeEntries.addEventListener("change", function(e) {
+    if (e.target.classList.contains("code")) {
+      checkHolidayCode();
+    }
+  });
+
+  // Also run on page load (default)
+  checkHolidayCode();
+
+  
     // Format Daily Rate with thousand separators
     document.getElementById('dailyRate').addEventListener('input', function(e) {
       let value = e.target.value.replace(/[^0-9.]/g, '');
@@ -554,10 +750,37 @@
         const cell = document.getElementById(key);
         if (cell) cell.textContent = `₱${results[key].toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       }
+      // Show gross salary
+      document.getElementById('grossPay').textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+	  
+      // Get deduction values
+		const deductions = {
+		  sss: getVal('sss'),
+		  pagibig: getVal('pagibig'),
+		  philhealth: getVal('philhealth'),
+		  uniondues: getVal('uniondues'),
+		  educloan: getVal('educloan'),
+		  homesuiteloan: getVal('homesuiteloan'),
+		  emergencyloan: getVal('emergencyloan'),
+		  coop: getVal('coop')
+		};
 
-      document.getElementById('totalPay').textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+		let totalDeductions = 0;
+		for (const key in deductions) {
+		  totalDeductions += deductions[key];
+		  const cell = document.getElementById(key + 'Deduction');
+		  if (cell) cell.textContent = `₱${deductions[key].toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+		}
+		// Show total Deductions
+		document.getElementById('totalDeductions').textContent = `₱${totalDeductions.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+		
+		// Show Net Pay (Gross-Deduction)
+		const netPay = total - totalDeductions;
+		document.getElementById('netPay').textContent =
+		  `₱${netPay.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;	  
     }
-
+			  
+		  
     // Add new row
     document.getElementById('addRowBtn').addEventListener('click', function() {
       const tbody = document.querySelector('#timeEntries tbody');
@@ -731,9 +954,13 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
   const mealAllowanceAmt = mealAllowanceDays * 115;
   document.getElementById('mealAllowanceDays').value = mealAllowanceDays;
   document.getElementById('mealAllowanceAmt').value  = mealAllowanceAmt.toFixed(2);
-
+  
+  // Unhide results section after calculation
+  document.getElementById('resultsSection').classList.remove('hidden');
+    
   // Recalculate salary
   calculateSalary();
+  
 });
     
     
@@ -813,11 +1040,11 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
                   <td><input type="time" class="time-out" value="${entry.timeOut || ''}"></td>
                   <td>
                     <select class="code">
-                      <option value="Reg" ${entry.code === 'Reg' ? 'selected' : ''}>Regular (Reg)</option>
-                      <option value="6D" ${entry.code === '6D' ? 'selected' : ''}>6th Day (6D)</option>
-                      <option value="LH" ${entry.code === 'LH' ? 'selected' : ''}>Legal Holiday (LH)</option>
-                      <option value="SH" ${entry.code === 'SH' ? 'selected' : ''}>Special Holiday (SH)</option>
-                      <option value="VL" ${entry.code === 'VL' ? 'selected' : ''}>Leave (VL)</option>
+                      <option value="Reg" ${entry.code === 'Reg' ? 'selected' : ''}>Reg</option>
+                      <option value="6D" ${entry.code === '6D' ? 'selected' : ''}>6D</option>
+                      <option value="LH" ${entry.code === 'LH' ? 'selected' : ''}>LH</option>
+                      <option value="SH" ${entry.code === 'SH' ? 'selected' : ''}>SH</option>
+                      <option value="VL" ${entry.code === 'VL' ? 'selected' : ''}>VL</option>
                     
                     </select>
                   </td>
@@ -843,11 +1070,25 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
     document.getElementById('toggleHolidayBtn').addEventListener('click', function() {
       const holidaySection = document.getElementById('holidaySection');
       holidaySection.classList.toggle('hidden');
-      this.textContent = holidaySection.classList.contains('hidden') ? 'Show Holiday Section' : 'Hide Holiday Section';
-    });
+      this.textContent = holidaySection.classList.contains('hidden') 
+		? 'Show Holiday Section' 
+		: 'Hide Holiday Section';
+      });
+      
+    // Toggle deduction section visibility
+    document.getElementById('toggleDeductionBtn').addEventListener('click', function() {
+      const deductionSection = document.getElementById('deductionSection');
+      deductionSection.classList.toggle('hidden');
+      this.textContent = deductionSection.classList.contains('hidden')
+        ? 'Show Deductions Section'
+        : 'Hide Deductions Section';
+      });
+	
 
     // Initial calculation
     calculateSalary();
+    
   </script>
 </body>
-</html>
+
+          </html>
