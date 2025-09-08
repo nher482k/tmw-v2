@@ -72,6 +72,18 @@
       color: #FBDE25;
       font-size: 14px;
     }
+    label1 {
+      width: 140px;
+      font-weight: bold;
+      color: #6edb25;
+      font-size: 14px;
+    }
+  label2 {
+      width: 140px;
+      font-weight: bold;
+      color: #f08b59;
+      font-size: 14px;
+    }
     input[type="time"], input[type="date"], input[type="text1"], select {
       padding: 8px 4px;
       border: 1px solid #ddd;
@@ -137,7 +149,16 @@
       color: #ff3333;
       font-size: 20px;
     }
-  
+ .tax-calculation {
+      width: 160px;
+      padding: 8px 10px;
+      background-color: rgba(248, 249, 250, 0.8);
+      border-radius: 5px;
+      text-align: right;
+      font-weight: bold;
+      color: #ff3333;
+      font-size: 16px;
+    }
     .total-row {
       margin-top: 25px;
       padding-top: 5px;
@@ -520,12 +541,12 @@
 <!-- ✅ Hidden Deduction Section -->
 <div id="deductionSection" class="holiday-section hidden">
   <div class="total-row">
-    <h5>- - - D E D U C T I O N S - - -</h5>
+    <h5>- - - Deductions Before Tax - - -</h5>
     <div style="flex: 1;"></div>
   </div>
 
   <div class="input-row">
-    <label for="sss">SSS:</label>
+    <label1 for="sss">SSS:</label1>
     <div class="input-group">
       <input type="number" id="sss" class="small-input" placeholder="Amount">
       <div class="calculation" id="sssDeduction">₱0.00</div>
@@ -533,7 +554,7 @@
   </div>
 
   <div class="input-row">
-    <label for="pagibig">Pag-IBIG:</label>
+    <label1 for="pagibig">Pag-IBIG:</label1>
     <div class="input-group">
       <input type="number" id="pagibig" class="small-input" placeholder="Amount">
       <div class="calculation" id="pagibigDeduction">₱0.00</div>
@@ -541,7 +562,7 @@
   </div>
 
   <div class="input-row">
-    <label for="philhealth">PhilHealth:</label>
+    <label1 for="philhealth">PhilHealth:</label1>
     <div class="input-group">
       <input type="number" id="philhealth" class="small-input" placeholder="Amount">
       <div class="calculation" id="philhealthDeduction">₱0.00</div>
@@ -549,31 +570,18 @@
   </div>
 
   <div class="input-row">
-    <label for="uniondues">Union Dues:</label>
+    <label1 for="uniondues">Union Dues:</label1>
     <div class="input-group">
       <input type="number" id="uniondues" class="small-input" placeholder="Amount">
       <div class="calculation" id="unionduesDeduction">₱0.00</div>
     </div>
   </div>
+  
+<h5>- - - Deductions After Tax - - -</h5>
+
 
   <div class="input-row">
-    <label for="educloan">EducLoan:</label>
-    <div class="input-group">
-      <input type="number" id="educloan" class="small-input" placeholder="Amount">
-      <div class="calculation" id="educloanDeduction">₱0.00</div>
-    </div>
-  </div>
-
-  <div class="input-row">
-    <label for="homesuiteloan">Home Suite Loan:</label>
-    <div class="input-group">
-      <input type="number" id="homesuiteloan" class="small-input" placeholder="Amount">
-      <div class="calculation" id="homesuiteloanDeduction">₱0.00</div>
-    </div>
-  </div>
-
-  <div class="input-row">
-    <label for="emergencyloan">Emergency Loan:</label>
+    <label2 for="emergencyloan">RETCONTP:</label2>
     <div class="input-group">
       <input type="number" id="emergencyloan" class="small-input" placeholder="Amount">
       <div class="calculation" id="emergencyloanDeduction">₱0.00</div>
@@ -581,14 +589,40 @@
   </div>
 
   <div class="input-row">
-    <label for="coop">COOP:</label>
+    <label2 for="coop">STAFFSHOP:</label2>
     <div class="input-group">
       <input type="number" id="coop" class="small-input" placeholder="Amount">
       <div class="calculation" id="coopDeduction">₱0.00</div>
     </div>
   </div>
-</div>
+  
+  <div class="input-row">
+    <label2 for="educloan">EducLoan:</label2>
+    <div class="input-group">
+      <input type="number" id="educloan" class="small-input" placeholder="Amount">
+      <div class="calculation" id="educloanDeduction">₱0.00</div>
+    </div>
+  </div>
 
+  <div class="input-row">
+    <label2 for="homesuiteloan">Home Suite Loan:</label2>
+    <div class="input-group">
+      <input type="number" id="homesuiteloan" class="small-input" placeholder="Amount">
+      <div class="calculation" id="homesuiteloanDeduction">₱0.00</div>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label for="tax">Withholding Tax:</label>
+    <div class="input-group">
+      <div style="flex: 1;"></div>
+      <div class="tax-calculation" id="tax">₱0.00</div>
+    </div>
+  </div>
+      
+</div>
+      
+      
 <div class="input-row total-row">
   <label>Gross Salary:</label>
   <div class="input-group">
@@ -675,13 +709,37 @@
       let value = element.value.replace(/,/g, '');
       return parseFloat(value) || 0;
     }
-
+    
+    function computeWeeklyTax(weeklyIncome) {
+      if (weeklyIncome <= 4807.69) {
+        return 0;
+      } else if (weeklyIncome <= 7692.31) {
+        return (weeklyIncome - 4807.69) * 0.15;
+      } else if (weeklyIncome <= 15384.62) {
+        return 432.70 + (weeklyIncome - 7692.31) * 0.20;
+      } else if (weeklyIncome <= 38461.54) {
+        return 1971.20 + (weeklyIncome - 15384.62) * 0.25;
+      } else if (weeklyIncome <= 153846.15) {
+        return 7740.40 + (weeklyIncome - 38461.54) * 0.30;
+      } else {
+        return 42355.80 + (weeklyIncome - 153846.15) * 0.35;
+      }
+    }
+    
     function calculateSalary() {
       const rate = getNumericValue('dailyRate');
       const hr = rate / 8;
 
-      const getVal = id => parseFloat(document.getElementById(id).value) || 0;
-
+      //const getVal = id => parseFloat(document.getElementById(id).value) || 0;
+      const getVal = id => {
+  const el = document.getElementById(id);
+  if (!el) return 0;
+  let val = el.value.replace(/,/g, '');
+  return parseFloat(val) || 0;
+};
+      
+      
+      
       const values = {
         regHours: getVal('regHours'),
         otHours: getVal('otHours'),
@@ -764,22 +822,52 @@
 		  emergencyloan: getVal('emergencyloan'),
 		  coop: getVal('coop')
 		};
-
-		let totalDeductions = 0;
+      
+// Add event listeners to all deduction inputs
+const deductionInputs = document.querySelectorAll('#deductions input[type="number"]');
+deductionInputs.forEach(input => input.addEventListener('input', calculateSalary));
+		
+  let totalDeductions = 0;
 		for (const key in deductions) {
 		  totalDeductions += deductions[key];
+		  
 		  const cell = document.getElementById(key + 'Deduction');
 		  if (cell) cell.textContent = `₱${deductions[key].toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 		}
+
 		// Show total Deductions
 		document.getElementById('totalDeductions').textContent = `₱${totalDeductions.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 		
-		// Show Net Pay (Gross-Deduction)
-		const netPay = total - totalDeductions;
-		document.getElementById('netPay').textContent =
-		  `₱${netPay.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;	  
+// Compute taxable income (exclude meal allowance + contributions)
+const taxableIncome = total
+  - results.mealAllowanceAmt
+  - deductions.sss
+  - deductions.pagibig
+  - deductions.philhealth
+  - deductions.uniondues;
+
+const taxable = Math.max(taxableIncome, 0);
+
+// Compute tax using weekly table
+const tax = computeWeeklyTax(taxable);
+
+// Add tax into total deductions
+totalDeductions += tax;
+
+// Show deductions individually
+document.getElementById('tax').textContent =
+  `₱${tax.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+// Show updated Total Deductions (now including tax)
+document.getElementById('totalDeductions').textContent =
+  `₱${totalDeductions.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+// Net Pay = Gross - (all deductions including tax)
+const netPay = total - totalDeductions;
+document.getElementById('netPay').textContent =
+  `₱${netPay.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
-			  
+    
 		  
     // Add new row
     document.getElementById('addRowBtn').addEventListener('click', function() {
@@ -1091,4 +1179,4 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
   </script>
 </body>
 
-          </html>
+</html>
