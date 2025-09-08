@@ -1,7 +1,7 @@
 {
   "name": "TMW",
   "short_name": "TMW",
-  "start_url": "/tmw/",
+  "start_url": "/tmw-v2/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3367D6",
