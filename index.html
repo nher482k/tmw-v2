@@ -372,7 +372,7 @@
       <!-- Salary Summary Section (hidden at first) -->
     <div id="resultsSection" class="holiday-section hidden">
 
-      <h5>- - - R e s u l t s - - -</h5>
+      <h5>- - - Calculation Results - - -</h5>
           <div style="flex: 1;"></div>
     
       
@@ -589,26 +589,26 @@
   </div>
 
   <div class="input-row">
-    <label2 for="coop">STAFFSHOP:</label2>
+    <label2 for="stafshop">STAFFSHOP:</label2>
     <div class="input-group">
-      <input type="number" id="coop" class="small-input" placeholder="Amount">
-      <div class="calculation" id="coopDeduction">₱0.00</div>
+      <input type="number" id="stafshop" class="small-input" placeholder="Amount">
+      <div class="calculation" id="stafshopDeduction">₱0.00</div>
     </div>
   </div>
   
   <div class="input-row">
-    <label2 for="educloan">EducLoan:</label2>
+    <label2 for="loan1">LOAN 1:</label2>
     <div class="input-group">
-      <input type="number" id="educloan" class="small-input" placeholder="Amount">
-      <div class="calculation" id="educloanDeduction">₱0.00</div>
+      <input type="number" id="loan1" class="small-input" placeholder="Amount">
+      <div class="calculation" id="loan1Deduction">₱0.00</div>
     </div>
   </div>
 
   <div class="input-row">
-    <label2 for="homesuiteloan">Home Suite Loan:</label2>
+    <label2 for="loan2">LOAN 2:</label2>
     <div class="input-group">
-      <input type="number" id="homesuiteloan" class="small-input" placeholder="Amount">
-      <div class="calculation" id="homesuiteloanDeduction">₱0.00</div>
+      <input type="number" id="loan2" class="small-input" placeholder="Amount">
+      <div class="calculation" id="loan2Deduction">₱0.00</div>
     </div>
   </div>
 
@@ -817,10 +817,10 @@
 		  pagibig: getVal('pagibig'),
 		  philhealth: getVal('philhealth'),
 		  uniondues: getVal('uniondues'),
-		  educloan: getVal('educloan'),
-		  homesuiteloan: getVal('homesuiteloan'),
+		  loan1: getVal('loan1'),
+		  loan2: getVal('loan2'),
 		  emergencyloan: getVal('emergencyloan'),
-		  coop: getVal('coop')
+		  stafshop: getVal('stafshop')
 		};
       
 // Add event listeners to all deduction inputs
@@ -1179,4 +1179,4 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
   </script>
 </body>
 
-</html>
+	</html>
