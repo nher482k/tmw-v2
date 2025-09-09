@@ -1,6 +1,6 @@
 {
-  "name": "TMW",
-  "short_name": "TMW",
+  "name": "TMW V2",
+  "short_name": "TMW V2",
   "start_url": "/tmw-v2/",
   "display": "standalone",
   "background_color": "#ffffff",
