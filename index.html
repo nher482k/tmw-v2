@@ -8,8 +8,6 @@
   
   <!-- Android / Chrome --> 
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-	
-  <link rel="manifest" href="/tmw-v2/manifest.json">
 
   <style>
     body {
@@ -583,10 +581,10 @@
 
 
   <div class="input-row">
-    <label2 for="emergencyloan">RETCONTP:</label2>
+    <label2 for="retcontp">RETCONTP:</label2>
     <div class="input-group">
-      <input type="number" id="emergencyloan" class="small-input" placeholder="Amount">
-      <div class="calculation" id="emergencyloanDeduction">₱0.00</div>
+      <input type="number" id="retcontp" class="small-input" placeholder="Percent(%)">
+      <div class="calculation" id="retcontpDeduction">₱0.00</div>
     </div>
   </div>
 
@@ -814,16 +812,23 @@
       document.getElementById('grossPay').textContent = `₱${total.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 	  
       // Get deduction values
-		const deductions = {
-		  sss: getVal('sss'),
-		  pagibig: getVal('pagibig'),
-		  philhealth: getVal('philhealth'),
-		  uniondues: getVal('uniondues'),
-		  loan1: getVal('loan1'),
-		  loan2: getVal('loan2'),
-		  emergencyloan: getVal('emergencyloan'),
-		  stafshop: getVal('stafshop')
-		};
+		// Get deduction values
+const deductions = {
+  sss: getVal('sss'),
+  pagibig: getVal('pagibig'),
+  philhealth: getVal('philhealth'),
+  uniondues: getVal('uniondues'),
+  loan1: getVal('loan1'),
+  loan2: getVal('loan2'),
+  stafshop: getVal('stafshop')
+};
+
+// ✅ Compute RETCONTP deduction using formula
+const retcontpPercent = getVal('retcontp'); // user enters percentage (e.g., 5 for 5%)
+const retconpdeduction = (rate * 314 * (retcontpPercent / 100)) / 48;
+
+// Add it into deductions object
+deductions.retcontp = retconpdeduction;
       
 // Add event listeners to all deduction inputs
 const deductionInputs = document.querySelectorAll('#deductions input[type="number"]');
@@ -1181,4 +1186,4 @@ document.getElementById('calculateHoursBtn').addEventListener('click', function(
   </script>
 </body>
 
-	</html>
+</html>
